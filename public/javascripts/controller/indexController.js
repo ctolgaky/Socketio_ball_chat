@@ -53,15 +53,45 @@ app.controller('indexController', ['$scope','indexFactory', ($scope, indexFactor
                 delete $scope.players[data.id];
                 $scope.$apply();
             });
+
+            socket.on('animate',(data)=>{
+                $('#'+ data.socketId).animate({'left':data.x, 'top':data.y}, ()=>{
+                    animate= false;
+                });
+            });
+
             let animate = false;
             $scope.onClickPlayer = ($event)=>{
               console.log($event.offsetX, $event.offsetY);
                 if(!animate){
+
+                    let x = $event.offsetX;
+                    let y = $event.offsetY;
+
+                    socket.emit('animate', {x,y});
+
                     animate= true;
-                    $('#'+ socket.id).animate({'left':$event.offsetX, 'top':$event.offsetY}, ()=>{
+                    $('#'+ socket.id).animate({'left':x, 'top':y}, ()=>{
                         animate= false;
                     });
-                }
+                };
+            };
+
+            $scope.newMessage = ()=>{
+                let message = $scope.message;
+
+                const messageData = {
+                    type:{
+                        code: 1 // login or disconnect message
+                    }, //info
+                    username: username,
+                    text: message
+
+                };
+
+                $scope.messages.push(messageData);
+                $scope.message = "";
+
 
             };
         }).catch((err)=>{
