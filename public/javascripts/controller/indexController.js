@@ -25,6 +25,7 @@ app.controller('indexController', ['$scope','indexFactory','configFactory', ($sc
         setTimeout(()=>{
             $('#'+ id).find('.message').hide();
         },2000)
+
     };
 
     async function initSocket(username){
